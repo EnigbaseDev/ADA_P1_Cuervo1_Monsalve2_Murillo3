@@ -1,5 +1,5 @@
 # Práctica 1 - EDA
-##Estructuras Unidimensionales
+## Estructuras Unidimensionales
 
 ## Integrantes
 
