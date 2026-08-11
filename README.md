@@ -1,7 +1,7 @@
 # Práctica 1 - EDA
 ## Estructuras Unidimensionales
 
-## Integrantes
+### Integrantes
 
 - Carlos Mario Monsalve Tangarife
 - Luisa María Cuervo Prado
