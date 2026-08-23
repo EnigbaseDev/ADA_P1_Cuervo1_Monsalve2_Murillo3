@@ -35,3 +35,16 @@ bool StackArray::pop(int& valorSacado){
     tamano = tamano -1;
     return true;
 }
+bool StackArray::peek(int& valor) const {
+    if(tamano ==0){
+        return false;
+    }
+    valor = datos[tamano -1]; //no sacamos el elemnto
+    return true;
+}
+bool StackArray::isEmpty() const {
+    return tamano ==0;
+}
+int StackArray::size() const{
+    return tamano;
+}
