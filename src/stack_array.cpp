@@ -9,3 +9,21 @@ StackArray::StackArray(int capacidadInicial) {
 StackArray::~StackArray() {
     delete[] datos;
 }
+
+void StackArray::push(int valor) {
+    if(tamano ==capacidad) {
+        int nuevaCapacidad = capacidad * 2;
+        int *  nuevoArreglo = new int [nuevaCapacidad];
+
+        for(int i = 0; i < tamano; i++){
+            nuevoArreglo[i] = datos[i];
+        }
+        delete [] datos;
+        datos = nuevoArreglo;
+        capacidad = nuevaCapacidad; 
+    }
+    
+    datos[tamano] = valor;
+    tamano = tamano + 1;
+
+}

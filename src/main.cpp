@@ -2,7 +2,12 @@
 #include <iostream>
 
 int main() {
-    StackArray pila(3);
-    std::cout <<"Pila creada correctamente." << std::endl;
+    StackArray pila(2);
+    
+    pila.push(10);
+    pila.push(20);
+    pila.push(30);
+
+    std::cout << "Pila creada y push funcionando." << std::endl;
     return 0;
 }
