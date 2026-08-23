@@ -10,10 +10,14 @@ class StackArray {
 
     public:
         StackArray(int capacidadInicial); //constructor
+      
+    
         ~StackArray(); //destructor
+           
+
 
         void push(int valor);
-        bool pop(int& valorSacado);
+        bool pop(int& valorSacado); //puntero pq estas operaciones necesitan conocer la posición
         bool peek(int& valor) const;
         bool isEmpty() const;
         int size() const;
