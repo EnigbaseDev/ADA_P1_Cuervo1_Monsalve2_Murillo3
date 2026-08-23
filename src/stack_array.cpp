@@ -27,3 +27,11 @@ void StackArray::push(int valor) {
     tamano = tamano + 1;
 
 }
+bool StackArray::pop(int& valorSacado){
+    if (tamano == 0){
+        return false;
+    }
+    valorSacado = datos[tamano -1];
+    tamano = tamano -1;
+    return true;
+}

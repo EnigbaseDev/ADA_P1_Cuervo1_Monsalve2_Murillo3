@@ -8,6 +8,10 @@ int main() {
     pila.push(20);
     pila.push(30);
 
+    int valor;
+    bool exito = pila.pop(valor);
+    std::cout << "pop devolvio:" << exito << ", valor: " << valor << std::endl;
+
     std::cout << "Pila creada y push funcionando." << std::endl;
     return 0;
 }
