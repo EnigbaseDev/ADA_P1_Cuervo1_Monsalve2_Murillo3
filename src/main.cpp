@@ -1,16 +1,18 @@
 #include "stack_array.hpp"
+#include "undoredo.hpp"
 #include <iostream>
 
 int main() {
-    StackArray pila(2);
+    StackArray pila(3);
     
-    pila.push(10);
-    pila.push(20);
-    pila.push(30);
+    pila.push({INSERT, 0, "hola"});
+    pila.push({DELETE, 5, ""});
+    pila.push({REPLACE, 2, "mundo"});
 
-    int valor;
-    bool exito = pila.pop(valor);
-    std::cout << "pop devolvio:" << exito << ", valor: " << valor << std::endl;
+   Operacion op;
+    bool exito = pila.pop(op);
+    std::cout << "pop devolvio:" << exito << ", tipo: " << op.tipo
+              << ", posicion:" << op.posicion << ", contenido: " << op.contenido << std::endl;
 
     std::cout << "Pila creada y push funcionando." << std::endl;
     return 0;

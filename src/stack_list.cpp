@@ -1,5 +1,6 @@
 #ifndef STACK_LIST_HPP
 #define STACK_LIST_HPP
+#include "stack_list.hpp"
 
 struct Nodo{
     int valor;
@@ -68,7 +69,7 @@ bool StackList::isEmpty() const{
     return cabeza == nullptr;
 }
 
-int StackList:: size() const{
+int StackList::size() const {
     return tamano;
 }
 #endif
