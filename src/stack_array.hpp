@@ -1,6 +1,14 @@
 #ifndef STACK_ARRAY_HPP
 #define STACK_ARRAY_HPP
-#include "undoredo.hpp"
+#include <string>
+
+enum TipoEdicion {INSERT, DELETE, REPLACE };
+
+struct Operacion{
+    TipoEdicion tipo;
+    int posicion;
+    std::string contenido;
+};
 
 class StackArray {
 private:

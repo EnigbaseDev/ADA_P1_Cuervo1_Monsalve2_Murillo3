@@ -1,13 +1,20 @@
 #ifndef UNDOREDO_HPP
 #define UNDOREDO_HPP
-#include <string>
+#include "stack_array.hpp"
 
-enum TipoEdicion {INSERT, DELETE, REPLACE};
+class GestorUndoRedo {
+    private: 
+    StackArray pilaUndo;
+    StackArray pilaRedo;
 
-struct Operacion {
-    TipoEdicion tipo;
-    int posicion;
-    std::string contenido;
+    public:
+    GestorUndoRedo(int capacidadInicial);
+
+    void registrarEdicion(Operacion op); //llamamos al ocurro un EDIT
+    bool deshacer (Operacion& opDesecha);
+    bool rehacer (Operacion& opResecha);
+
+    int tamanoUndo() const;
+    int tamanoRedo() const;
 };
-
 #endif
