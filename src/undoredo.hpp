@@ -1,6 +1,7 @@
 #ifndef UNDOREDO_HPP
 #define UNDOREDO_HPP
 #include "stack_array.hpp"
+#include <string>
 
 class GestorUndoRedo {
     private: 
@@ -16,5 +17,7 @@ class GestorUndoRedo {
 
     int tamanoUndo() const;
     int tamanoRedo() const;
+
+    void procesarArchivo(const std::string& rutaEntrada, const std::string& rutaSalida);
 };
 #endif
