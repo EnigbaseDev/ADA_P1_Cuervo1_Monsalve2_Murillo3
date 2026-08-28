@@ -95,7 +95,7 @@ void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::
             Operacion op = {tipo, posicion, contenido};
             aplicarOperacion(documento, op);
             registrarEdicion(op);
-            salida <<"EDIT apliaco correctamente"<<std::endl;
+            salida <<"EDIT aplicado correctamente"<<std::endl;
 
         } else if (comando == "UNDO"){
             Operacion op;

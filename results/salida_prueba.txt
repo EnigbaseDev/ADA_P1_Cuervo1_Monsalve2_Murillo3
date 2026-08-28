@@ -1,0 +1,9 @@
+EDIT aplicado correctamente
+EDIT aplicado correctamente
+UNDO exitoso
+UNDO exitoso
+REDO exitoso
+Esatdo final: 
+Documento: Hola mundo
+Elementos en pila Undo: 1
+Elementos en pila Redo: 1
