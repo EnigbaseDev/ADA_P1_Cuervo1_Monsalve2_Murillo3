@@ -1,5 +1,0 @@
-EDIT INSERT 0 Hola mundo
-EDIT INSERT 5 , bonito
-UNDO
-UNDO
-REDO

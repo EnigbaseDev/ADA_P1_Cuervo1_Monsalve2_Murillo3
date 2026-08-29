@@ -1,0 +1,8 @@
+EDIT aplicado correctamente
+UNDO exitoso
+REDO exitoso
+REDO no-op: pila Redo vacía
+Esatdo final: 
+Documento: x
+Elementos en pila Undo: 1
+Elementos en pila Redo: 0

@@ -64,6 +64,14 @@ static void revertirOperacion(std::string& documento, Operacion op) {
 void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::string& rutaSalida){
     std::ifstream entrada(rutaEntrada);
     std::ofstream salida(rutaSalida);
+    if (!entrada.is_open()) {
+    std::cerr << "ERROR: no se pudo abrir el archivo de entrada: " << rutaEntrada << std::endl;
+    return;
+}
+if (!salida.is_open()) {
+    std::cerr << "ERROR: no se pudo abrir el archivo de salida: " << rutaSalida << std::endl;
+    return;
+}
     std::string documento ="";
     std::string linea;
 

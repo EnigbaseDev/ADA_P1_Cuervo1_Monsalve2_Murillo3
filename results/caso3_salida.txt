@@ -1,0 +1,7 @@
+EDIT aplicado correctamente
+UNDO exitoso
+REDO exitoso
+Esatdo final: 
+Documento: unica
+Elementos en pila Undo: 1
+Elementos en pila Redo: 0

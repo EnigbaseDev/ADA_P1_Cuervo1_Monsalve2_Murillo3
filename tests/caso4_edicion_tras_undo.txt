@@ -1,0 +1,5 @@
+EDIT INSERT 0 primero
+EDIT INSERT 0 segubdo
+UNDO
+EDIT INSERT 0 tercero
+REDO

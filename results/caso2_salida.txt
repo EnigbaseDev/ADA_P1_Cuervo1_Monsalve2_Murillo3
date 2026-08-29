@@ -1,3 +1,4 @@
+UNDO no-op: pila Undo vacia
 Esatdo final: 
 Documento: 
 Elementos en pila Undo: 0

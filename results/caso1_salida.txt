@@ -1,0 +1,9 @@
+EDIT aplicado correctamente
+EDIT aplicado correctamente
+UNDO exitoso
+REDO exitoso
+EDIT aplicado correctamente
+Esatdo final: 
+Documento: FINpeoplehola
+Elementos en pila Undo: 3
+Elementos en pila Redo: 0
