@@ -134,41 +134,55 @@ void correrCasosDePruebaP2() {
     }
 }
 
-void medirTiemposP2() {
-    std::cout << "DEBUG: Entro a medirTiemposP2 correctamente" << std::endl;
+struct PaqueteMemoria {
+    uint64_t timestamp;
+    size_t bytes;
+};
 
+void medirTiemposP2() {
+    // Se corrigieron los nombres para usar los de P2: "p2_n*.txt"
     std::vector<std::pair<int, std::string>> tamanos = {
-        {1000, "data/generados/n1000.txt"},
-        {10000, "data/generados/n10000.txt"},
-        {100000, "data/generados/n100000.txt"},
-        {1000000, "data/generados/n1000000.txt"}
+        {1000, "data/generados/p2_n1000.txt"},
+        {10000, "data/generados/p2_n10000.txt"},
+        {100000, "data/generados/p2_n100000.txt"},
+        {1000000, "data/generados/p2_n1000000.txt"}
     };
 
     std::ofstream reporte("results/experimentacion_p2.txt");
     reporte << "n_paquetes,tiempo_ms_promedio,desviacion_estandar_ms" << std::endl;
 
     for (const auto& [n, rutaEntrada] : tamanos) {
-        std::ifstream fcheck(rutaEntrada);
-        if (!fcheck.is_open()) {
+        std::ifstream fileIn(rutaEntrada);
+        if (!fileIn.is_open()) {
             std::cout << "Omitiendo medicion de P2 para n=" << n << " (archivo no encontrado)" << std::endl;
             continue;
         }
-        fcheck.close();
+
+        // Cargar datos a memoria previo a la medicion
+        std::vector<PaqueteMemoria> paquetes;
+        paquetes.reserve(n);
+
+        uint64_t ts;
+        size_t b;
+        while (fileIn >> ts >> b) {
+            paquetes.push_back({ts, b});
+        }
+        fileIn.close();
+
+        if (paquetes.empty()) {
+            std::cout << "ERROR: El archivo " << rutaEntrada << " no contiene datos validos de P2." << std::endl;
+            continue;
+        }
 
         std::vector<double> tiempos;
 
         for (int repeticion = 0; repeticion < 5; repeticion++) {
-            auto inicio = std::chrono::high_resolution_clock::now();
-
-            std::ifstream fileIn(rutaEntrada);
             RateLimiter rateLimiter(10, 1000, 5);
 
-            uint64_t timestamp;
-            size_t bytes;
+            auto inicio = std::chrono::high_resolution_clock::now();
 
-            // Lectura directa de números (timestamp y bytes)
-            while (fileIn >> timestamp >> bytes) {
-                rateLimiter.processPacket(timestamp, bytes);
+            for (const auto& pkt : paquetes) {
+                rateLimiter.processPacket(pkt.timestamp, pkt.bytes);
             }
 
             auto fin = std::chrono::high_resolution_clock::now();
@@ -185,7 +199,7 @@ void medirTiemposP2() {
         double desviacion = std::sqrt(sumaCuadrados / tiempos.size());
 
         reporte << n << "," << promedio << "," << desviacion << std::endl;
-        std::cout << "P2 n=" << n << " -> promedio=" << promedio << "ms, desv=" << desviacion << "ms" << std::endl;
+        std::cout << "P2 n=" << n << " (" << paquetes.size() << " paquetes) -> promedio=" << promedio << "ms, desv=" << desviacion << "ms" << std::endl;
     }
 }
 
