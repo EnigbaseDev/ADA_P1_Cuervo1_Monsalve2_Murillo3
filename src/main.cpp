@@ -7,8 +7,9 @@
 #include <string>
 #include <cmath>
 
-
+// ==========================================
 // ESTRUCTURAS Y FUNCIONES DEL PROBLEMA 1
+// ==========================================
 
 struct CasoPrueba {
     std::string archivoEntrada;
@@ -79,8 +80,9 @@ void medirTiempos() {
     }
 }
 
-
+// ==========================================
 // ESTRUCTURAS Y FUNCIONES DEL PROBLEMA 2
+// ==========================================
 
 struct CasoPruebaP2 {
     std::string archivoEntrada;
@@ -132,8 +134,64 @@ void correrCasosDePruebaP2() {
     }
 }
 
+void medirTiemposP2() {
+    std::cout << "DEBUG: Entro a medirTiemposP2 correctamente" << std::endl;
 
+    std::vector<std::pair<int, std::string>> tamanos = {
+        {1000, "data/generados/n1000.txt"},
+        {10000, "data/generados/n10000.txt"},
+        {100000, "data/generados/n100000.txt"},
+        {1000000, "data/generados/n1000000.txt"}
+    };
+
+    std::ofstream reporte("results/experimentacion_p2.txt");
+    reporte << "n_paquetes,tiempo_ms_promedio,desviacion_estandar_ms" << std::endl;
+
+    for (const auto& [n, rutaEntrada] : tamanos) {
+        std::ifstream fcheck(rutaEntrada);
+        if (!fcheck.is_open()) {
+            std::cout << "Omitiendo medicion de P2 para n=" << n << " (archivo no encontrado)" << std::endl;
+            continue;
+        }
+        fcheck.close();
+
+        std::vector<double> tiempos;
+
+        for (int repeticion = 0; repeticion < 5; repeticion++) {
+            auto inicio = std::chrono::high_resolution_clock::now();
+
+            std::ifstream fileIn(rutaEntrada);
+            RateLimiter rateLimiter(10, 1000, 5);
+
+            uint64_t timestamp;
+            size_t bytes;
+
+            // Lectura directa de números (timestamp y bytes)
+            while (fileIn >> timestamp >> bytes) {
+                rateLimiter.processPacket(timestamp, bytes);
+            }
+
+            auto fin = std::chrono::high_resolution_clock::now();
+            double ms = std::chrono::duration<double, std::milli>(fin - inicio).count();
+            tiempos.push_back(ms);
+        }
+
+        double suma = 0;
+        for (double t : tiempos) suma += t;
+        double promedio = suma / tiempos.size();
+
+        double sumaCuadrados = 0;
+        for (double t : tiempos) sumaCuadrados += (t - promedio) * (t - promedio);
+        double desviacion = std::sqrt(sumaCuadrados / tiempos.size());
+
+        reporte << n << "," << promedio << "," << desviacion << std::endl;
+        std::cout << "P2 n=" << n << " -> promedio=" << promedio << "ms, desv=" << desviacion << "ms" << std::endl;
+    }
+}
+
+// ==========================================
 // ORQUESTADOR PRINCIPAL
+// ==========================================
 
 int main() {
     std::cout << "=== Corriendo casos de prueba Problema 1 (Seccion 11) ===" << std::endl;
@@ -144,6 +202,9 @@ int main() {
 
     std::cout << "\n=== Corriendo casos de prueba Problema 2 (Seccion 11) ===" << std::endl;
     correrCasosDePruebaP2();
+
+    std::cout << "\n=== Corriendo experimentacion de tiempos Problema 2 (Seccion 9) ===" << std::endl;
+    medirTiemposP2();
 
     return 0;
 }

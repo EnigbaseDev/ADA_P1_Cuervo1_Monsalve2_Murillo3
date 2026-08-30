@@ -4,10 +4,11 @@
 
 enum TipoEdicion {INSERT, DELETE, REPLACE };
 
-struct Operacion{
+struct Operacion {
     TipoEdicion tipo;
     int posicion;
-    std::string contenido;
+    std::string contenido;  
+    std::string contenidoPrevio; 
 };
 
 class StackArray {

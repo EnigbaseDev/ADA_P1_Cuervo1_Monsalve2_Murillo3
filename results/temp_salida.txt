@@ -1,0 +1,6 @@
+EDIT aplicado correctamente
+UNDO exitoso
+REDO exitoso
+EDIT aplicado correctamente
+UNDO exitoso
+EDIT aplicado correctamente

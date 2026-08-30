@@ -4,7 +4,7 @@ EDIT aplicado correctamente
 UNDO exitoso
 UNDO exitoso
 UNDO exitoso
-Esatdo final: 
+Estado final: 
 Documento: 
 Elementos en pila Undo: 0
 Elementos en pila Redo: 3
