@@ -1,4 +1,4 @@
-Intento de Dequeue sobre cola vacia capturado correctamente mediante std::underflow_error.
+=== Reporte de Salida: tests/p2_caso6_dequeue_vacio.txt ===
 
 Estadisticas Agregadas:
 Total Aceptados: 0

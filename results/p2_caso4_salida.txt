@@ -1,6 +1,7 @@
-Paquete 1: t=100ms, 64 bytes -> ACEPTADO
-Paquete 2: t=105ms, 64 bytes -> ACEPTADO
-Paquete 3: t=110ms, 64 bytes -> RECHAZADO_BUFFER_FULL
+=== Reporte de Salida: tests/p2_caso4_buffer_lleno.txt ===
+Paquete t=100ms, 64 bytes -> ACEPTADO
+Paquete t=105ms, 64 bytes -> ACEPTADO
+Paquete t=110ms, 64 bytes -> RECHAZADO_BUFFER_FULL
 
 Estadisticas Agregadas:
 Total Aceptados: 2

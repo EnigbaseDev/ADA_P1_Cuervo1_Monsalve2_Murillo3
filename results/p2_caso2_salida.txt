@@ -1,5 +1,4 @@
-Estado inicial del bufer: VACIO
-Operaciones de consulta realizadas sin desbordamiento.
+=== Reporte de Salida: tests/p2_caso2_buffer_vacio.txt ===
 
 Estadisticas Agregadas:
 Total Aceptados: 0

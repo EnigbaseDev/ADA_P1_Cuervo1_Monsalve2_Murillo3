@@ -1,4 +1,5 @@
-Paquete 1: t=100ms, 64 bytes -> ACEPTADO
+=== Reporte de Salida: tests/p2_caso3_unico_paquete.txt ===
+Paquete t=100ms, 64 bytes -> ACEPTADO
 
 Estadisticas Agregadas:
 Total Aceptados: 1

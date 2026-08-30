@@ -1,6 +1,7 @@
-Paquete 1: t=100ms, 64 bytes -> ACEPTADO
-Paquete 2: t=120ms, 64 bytes -> ACEPTADO
-Paquete 3: t=130ms, 64 bytes -> RECHAZADO_RATE_LIMIT
+=== Reporte de Salida: tests/p2_caso5_rafaga_excede_l.txt ===
+Paquete t=100ms, 64 bytes -> ACEPTADO
+Paquete t=120ms, 64 bytes -> ACEPTADO
+Paquete t=130ms, 64 bytes -> RECHAZADO_RATE_LIMIT
 
 Estadisticas Agregadas:
 Total Aceptados: 2
