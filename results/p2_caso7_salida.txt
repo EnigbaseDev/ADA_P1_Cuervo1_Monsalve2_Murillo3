@@ -1,0 +1,8 @@
+Paquete 1: t=100ms, 64 bytes -> ACEPTADO
+Paquete 2: t=1100ms, 64 bytes -> ACEPTADO (Paquete anterior purgado correctamente)
+
+Estadisticas Agregadas:
+Total Aceptados: 2
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 1

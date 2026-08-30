@@ -1,0 +1,9 @@
+Paquete 1: t=100ms, 64 bytes -> ACEPTADO
+Paquete 2: t=200ms, 128 bytes -> ACEPTADO
+Paquete 3: t=300ms, 256 bytes -> ACEPTADO
+
+Estadisticas Agregadas:
+Total Aceptados: 3
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 3

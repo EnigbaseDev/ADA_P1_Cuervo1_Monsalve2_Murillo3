@@ -1,0 +1,7 @@
+Paquete 1: t=100ms, 64 bytes -> ACEPTADO
+
+Estadisticas Agregadas:
+Total Aceptados: 1
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 1

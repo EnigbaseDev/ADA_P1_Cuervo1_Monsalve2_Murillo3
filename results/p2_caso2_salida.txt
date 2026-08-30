@@ -1,0 +1,8 @@
+Estado inicial del bufer: VACIO
+Operaciones de consulta realizadas sin desbordamiento.
+
+Estadisticas Agregadas:
+Total Aceptados: 0
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 0
