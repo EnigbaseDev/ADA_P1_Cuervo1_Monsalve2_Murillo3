@@ -7,6 +7,7 @@
 #include <string>
 #include <cmath>
 
+
 // ESTRUCTURAS Y FUNCIONES DEL PROBLEMA 1
 
 struct CasoPrueba {
@@ -45,6 +46,13 @@ void medirTiempos() {
     reporte << "n_eventos,tiempo_ms_promedio,desviacion_estandar_ms" << std::endl;
 
     for (const auto& [n, rutaEntrada] : tamanos) {
+        std::ifstream fcheck(rutaEntrada);
+        if (!fcheck.is_open()) {
+            std::cout << "Omitiendo medicion de P1 para n=" << n << " (archivo no generado en local)" << std::endl;
+            continue;
+        }
+        fcheck.close();
+
         std::vector<double> tiempos;
 
         for (int repeticion = 0; repeticion < 5; repeticion++) {
