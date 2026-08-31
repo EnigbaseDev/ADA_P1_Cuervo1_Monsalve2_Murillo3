@@ -1,5 +1,0 @@
-UNDO no-op: pila Undo vacia
-Estado final: 
-Documento: 
-Elementos en pila Undo: 0
-Elementos en pila Redo: 0

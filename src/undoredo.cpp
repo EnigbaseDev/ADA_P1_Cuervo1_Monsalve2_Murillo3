@@ -2,7 +2,45 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <algorithm> // Necesario para std::min
+#include <algorithm>
+#include <cctype>
+
+namespace {
+
+std::string trim(const std::string& texto) {
+    size_t inicio = 0;
+    while (inicio < texto.size() && std::isspace(static_cast<unsigned char>(texto[inicio]))) {
+        ++inicio;
+    }
+
+    size_t fin = texto.size();
+    while (fin > inicio && std::isspace(static_cast<unsigned char>(texto[fin - 1]))) {
+        --fin;
+    }
+
+    return texto.substr(inicio, fin - inicio);
+}
+
+bool parseLongitud(const std::string& texto, size_t& longitud) {
+    if (texto.empty()) {
+        return false;
+    }
+
+    try {
+        size_t pos = 0;
+        unsigned long long valor = std::stoull(texto, &pos);
+        if (pos == texto.size()) {
+            longitud = static_cast<size_t>(valor);
+            return true;
+        }
+    } catch (const std::exception&) {
+        return false;
+    }
+
+    return false;
+}
+
+} // namespace
 
 GestorUndoRedo::GestorUndoRedo(int capacidadInicial)
     : pilaUndo(capacidadInicial), pilaRedo(capacidadInicial) {}
@@ -20,6 +58,7 @@ bool GestorUndoRedo::deshacer(Operacion& opDesecha) {
     if (pilaUndo.isEmpty()) {
         return false;
     }
+
     Operacion op;
     pilaUndo.pop(op);
     pilaRedo.push(op);
@@ -31,6 +70,7 @@ bool GestorUndoRedo::rehacer(Operacion& opRehecha) {
     if (pilaRedo.isEmpty()) {
         return false;
     }
+
     Operacion op;
     pilaRedo.pop(op);
     pilaUndo.push(op);
@@ -47,8 +87,7 @@ int GestorUndoRedo::tamanoRedo() const {
 }
 
 static void aplicarOperacion(std::string& documento, Operacion op) {
-    // Garantizar que la posición nunca sea out_of_range
-    size_t pos = std::min((size_t)op.posicion, documento.size());
+    size_t pos = std::min(static_cast<size_t>(op.posicion), documento.size());
 
     if (op.tipo == INSERT) {
         documento.insert(pos, op.contenido);
@@ -56,14 +95,14 @@ static void aplicarOperacion(std::string& documento, Operacion op) {
         size_t len = std::min(op.contenido.size(), documento.size() - pos);
         documento.erase(pos, len);
     } else if (op.tipo == REPLACE) {
-        size_t len = std::min(op.contenido.size(), documento.size() - pos);
+        size_t len = std::min(op.contenidoPrevio.size(), documento.size() - pos);
         documento.erase(pos, len);
         documento.insert(pos, op.contenido);
     }
 }
 
 static void revertirOperacion(std::string& documento, Operacion op) {
-    size_t pos = std::min((size_t)op.posicion, documento.size());
+    size_t pos = std::min(static_cast<size_t>(op.posicion), documento.size());
 
     if (op.tipo == INSERT) {
         size_t len = std::min(op.contenido.size(), documento.size() - pos);
@@ -94,7 +133,9 @@ void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::
     std::string linea;
 
     while (std::getline(entrada, linea)) {
-        if (linea.empty()) continue;
+        if (linea.empty()) {
+            continue;
+        }
 
         std::istringstream iss(linea);
         std::string comando;
@@ -102,42 +143,44 @@ void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::
 
         if (comando == "EDIT") {
             std::string tipoStr;
-            int posicion;
+            int posicion = 0;
             std::string contenido;
             iss >> tipoStr >> posicion;
             std::getline(iss, contenido);
+            contenido = trim(contenido);
 
-            if (!contenido.empty() && contenido[0] == ' ') {
-                contenido = contenido.substr(1);
+            if (posicion < 0) {
+                posicion = 0;
             }
 
-            // Ajustar posición si excede el tamaño actual de documento
-            if (posicion < 0) posicion = 0;
-            size_t posValida = std::min((size_t)posicion, documento.size());
+            size_t posValida = std::min(static_cast<size_t>(posicion), documento.size());
 
-            TipoEdicion tipo;
-            if (tipoStr == "INSERT") tipo = INSERT;
-            else if (tipoStr == "DELETE") tipo = DELETE;
-            else tipo = REPLACE;
-
-            if (tipo == DELETE) {
-                int longitud = 0;
-                try {
-                    longitud = std::stoi(contenido);
-                } catch (...) {
-                    longitud = 1;
-                }
-                size_t lenValida = std::min((size_t)longitud, documento.size() - posValida);
-                contenido = documento.substr(posValida, lenValida);
+            TipoEdicion tipo = INSERT;
+            if (tipoStr == "DELETE") {
+                tipo = DELETE;
+            } else if (tipoStr == "REPLACE") {
+                tipo = REPLACE;
             }
 
             std::string contenidoPrevio = "";
-            if (tipo == REPLACE) {
-                size_t lenValida = std::min(contenido.size(), documento.size() - posValida);
-                contenidoPrevio = documento.substr(posValida, lenValida);
+            if (tipo == DELETE) {
+                size_t longitud = 0;
+                if (parseLongitud(contenido, longitud)) {
+                    size_t maxLongitud = documento.size() - posValida;
+                    longitud = std::min(longitud, maxLongitud);
+                    contenido = documento.substr(posValida, longitud);
+                } else {
+                    size_t maxLongitud = documento.size() - posValida;
+                    size_t longitudTexto = std::min(contenido.size(), maxLongitud);
+                    contenido = documento.substr(posValida, longitudTexto);
+                }
+            } else if (tipo == REPLACE) {
+                size_t maxLongitud = documento.size() - posValida;
+                size_t longitudAntes = std::min(contenido.size(), maxLongitud);
+                contenidoPrevio = documento.substr(posValida, longitudAntes);
             }
 
-            Operacion op = {tipo, (int)posValida, contenido, contenidoPrevio};
+            Operacion op = {tipo, static_cast<int>(posValida), contenido, contenidoPrevio};
             aplicarOperacion(documento, op);
             registrarEdicion(op);
             salida << "EDIT aplicado correctamente" << std::endl;
