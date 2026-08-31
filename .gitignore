@@ -1,0 +1,12 @@
+# Binarios compilados
+*.exe
+*.out
+ada_p1
+app
+app_output.txt
+programa_final.exe
+data/generador.exe
+
+# Datasets sinteticos grandes (se recrean deterministicamente con data/generador.cpp
+# usando la semilla fija; no se versionan por su tamano, sobre todo n=100000 y n=1000000)
+data/generados/*.txt

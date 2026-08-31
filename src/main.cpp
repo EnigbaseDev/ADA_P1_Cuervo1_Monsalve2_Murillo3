@@ -1,4 +1,5 @@
 #include "undoredo.hpp"
+#include "stack_list.hpp"
 #include "ratelimiter.hpp"
 #include <iostream>
 #include <fstream>
@@ -6,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <sstream>
 
 // ==========================================
 // ESTRUCTURAS Y FUNCIONES DEL PROBLEMA 1
@@ -29,10 +31,80 @@ void correrCasosDePrueba() {
     };
 
     for (const auto& caso : casos) {
-        GestorUndoRedo gestor(caso.capacidadInicial);
+        GestorUndoRedo<StackArray> gestor(caso.capacidadInicial);
         gestor.procesarArchivo(caso.archivoEntrada, caso.archivoSalida);
         std::cout << "Procesado P1: " << caso.archivoEntrada << std::endl;
     }
+}
+
+// ==========================================
+// DEMOSTRACION: PILA COMO TAD (Seccion 6)
+// ==========================================
+// Corre los mismos 7 casos de prueba del Problema 1 sobre las dos
+// representaciones de la Pila (StackArray y StackList) usando exactamente
+// la misma logica de GestorUndoRedo<PilaT>, y verifica que ambas producen
+// una salida identica. Esto es evidencia concreta de que ambas satisfacen
+// el mismo contrato de interfaz (mismo TAD, dos implementaciones distintas).
+std::string leerArchivoComoTexto(const std::string& ruta) {
+    std::ifstream f(ruta);
+    std::ostringstream ss;
+    ss << f.rdbuf();
+    return ss.str();
+}
+
+void demostrarPilaComoTAD() {
+    std::vector<CasoPrueba> casos = {
+        {"tests/caso1_secuencia_normal.txt", "results/tad_array_caso1.txt", 4},
+        {"tests/caso2_undo_vacio.txt", "results/tad_array_caso2.txt", 4},
+        {"tests/caso3_edicion_undo_redo.txt", "results/tad_array_caso3.txt", 4},
+        {"tests/caso4_edicion_tras_undo.txt", "results/tad_array_caso4.txt", 4},
+        {"tests/caso5_n_ediciones_n_deshacer.txt", "results/tad_array_caso5.txt", 4},
+        {"tests/caso6_redo_exceso.txt", "results/tad_array_caso6.txt", 4},
+        {"tests/caso7_crecimiento_capacidad.txt", "results/tad_array_caso7.txt", 2}
+    };
+
+    std::ofstream reporte("results/comparacion_pilas.txt");
+    reporte << "Comparacion StackArray vs StackList sobre el mismo TAD Pila (Undo/Redo)\n";
+    reporte << "=========================================================================\n\n";
+
+    bool todoIdentico = true;
+
+    for (const auto& caso : casos) {
+        std::string salidaList = caso.archivoSalida;
+        size_t posArray = salidaList.find("tad_array_");
+        if (posArray != std::string::npos) {
+            salidaList.replace(posArray, std::string("tad_array_").size(), "tad_list_");
+        }
+
+        GestorUndoRedo<StackArray> gestorArray(caso.capacidadInicial);
+        gestorArray.procesarArchivo(caso.archivoEntrada, caso.archivoSalida);
+
+        GestorUndoRedo<StackList> gestorList(caso.capacidadInicial);
+        gestorList.procesarArchivo(caso.archivoEntrada, salidaList);
+
+        std::string contenidoArray = leerArchivoComoTexto(caso.archivoSalida);
+        std::string contenidoList = leerArchivoComoTexto(salidaList);
+
+        bool iguales = (contenidoArray == contenidoList) && !contenidoArray.empty();
+        todoIdentico = todoIdentico && iguales;
+
+        reporte << "Caso: " << caso.archivoEntrada << " -> "
+                << (iguales ? "IDENTICO en ambas representaciones" : "DIFERENTE (revisar)")
+                << std::endl;
+    }
+
+    reporte << "\nConclusion: "
+            << (todoIdentico
+                    ? "Las dos representaciones del TAD Pila (arreglo dinamico y lista "
+                      "enlazada) producen resultados identicos para los 7 casos de prueba "
+                      "del Problema 1, confirmando que ambas satisfacen el mismo contrato "
+                      "de interfaz (push/pop/peek/isEmpty/size) sin que quien las use "
+                      "necesite conocer la representacion interna."
+                    : "Se detectaron diferencias entre representaciones; revisar implementacion.")
+            << std::endl;
+
+    std::cout << "Comparacion TAD Pila (StackArray vs StackList) completada -> "
+              << "results/comparacion_pilas.txt" << std::endl;
 }
 
 void medirTiempos() {
@@ -59,7 +131,7 @@ void medirTiempos() {
         for (int repeticion = 0; repeticion < 5; repeticion++) {
             auto inicio = std::chrono::high_resolution_clock::now();
 
-            GestorUndoRedo gestor(4);
+            GestorUndoRedo<StackArray> gestor(4);
             gestor.procesarArchivo(rutaEntrada, "results/temp_salida.txt");
 
             auto fin = std::chrono::high_resolution_clock::now();
@@ -92,6 +164,29 @@ struct CasoPruebaP2 {
     size_t L;
 };
 
+bool leerCabeceraP2(std::ifstream& fileIn, size_t& C, uint64_t& T, size_t& L) {
+    std::string linea;
+    if (!std::getline(fileIn, linea)) {
+        return false;
+    }
+
+    std::istringstream iss(linea);
+    size_t c = 0;
+    uint64_t t = 0;
+    size_t l = 0;
+
+    if (!(iss >> c >> t >> l)) {
+        fileIn.clear();
+        fileIn.seekg(0, std::ios::beg);
+        return false;
+    }
+
+    C = c;
+    T = t;
+    L = l;
+    return true;
+}
+
 void correrCasosDePruebaP2() {
     std::vector<CasoPruebaP2> casos = {
         {"tests/p2_caso1_flujo_normal.txt", "results/p2_caso1_salida.txt", 5, 1000, 3},
@@ -112,11 +207,24 @@ void correrCasosDePruebaP2() {
             continue;
         }
 
-        RateLimiter rateLimiter(caso.C, caso.T, caso.L);
+        size_t C = caso.C;
+        uint64_t T = caso.T;
+        size_t L = caso.L;
+
+        if (!leerCabeceraP2(fileIn, C, T, L)) {
+            fileIn.clear();
+            fileIn.seekg(0, std::ios::beg);
+            C = caso.C;
+            T = caso.T;
+            L = caso.L;
+        }
+
+        RateLimiter rateLimiter(C, T, L);
         uint64_t timestamp;
         size_t bytes;
 
         fileOut << "=== Reporte de Salida: " << caso.archivoEntrada << " ===" << std::endl;
+        fileOut << "Parametros: C=" << C << ", T=" << T << "ms, L=" << L << std::endl;
         while (fileIn >> timestamp >> bytes) {
             PacketResult res = rateLimiter.processPacket(timestamp, bytes);
             std::string estado = (res.decision == Decision::ACCEPTED) ? "ACEPTADO" :
@@ -129,6 +237,11 @@ void correrCasosDePruebaP2() {
         fileOut << "Total Rechazados Bufer Lleno: " << rateLimiter.getTotalRejectedBuffer() << std::endl;
         fileOut << "Total Rechazados Limite Tasa: " << rateLimiter.getTotalRejectedRate() << std::endl;
         fileOut << "Ocupacion Maxima del Bufer: " << rateLimiter.getMaxBufferOccupancy() << std::endl;
+        fileOut << "\nEstado Final de Colas:" << std::endl;
+        fileOut << "- Buffer: " << (rateLimiter.isBufferEmpty() ? "VACIO" : (rateLimiter.isBufferFull() ? "LLENO" : "PARCIAL"))
+                << ", ocupacion=" << rateLimiter.getBufferCount() << "/" << rateLimiter.getBufferCapacity() << std::endl;
+        fileOut << "- Cola de marcas de tiempo: " << (rateLimiter.isTimestampQueueEmpty() ? "VACIA" : "CON DATOS")
+                << ", elementos=" << rateLimiter.getTimestampCount() << std::endl;
 
         std::cout << "Procesado P2: " << caso.archivoEntrada << std::endl;
     }
@@ -158,6 +271,11 @@ void medirTiemposP2() {
             continue;
         }
 
+        size_t C = 10;
+        uint64_t T = 1000;
+        size_t L = 5;
+        leerCabeceraP2(fileIn, C, T, L);
+
         // Cargar datos a memoria previo a la medicion
         std::vector<PaqueteMemoria> paquetes;
         paquetes.reserve(n);
@@ -177,7 +295,7 @@ void medirTiemposP2() {
         std::vector<double> tiempos;
 
         for (int repeticion = 0; repeticion < 5; repeticion++) {
-            RateLimiter rateLimiter(10, 1000, 5);
+            RateLimiter rateLimiter(C, T, L);
 
             auto inicio = std::chrono::high_resolution_clock::now();
 
@@ -210,6 +328,9 @@ void medirTiemposP2() {
 int main() {
     std::cout << "=== Corriendo casos de prueba Problema 1 (Seccion 11) ===" << std::endl;
     correrCasosDePrueba();
+
+    std::cout << "\n=== Demostrando TAD Pila: StackArray vs StackList (Seccion 6) ===" << std::endl;
+    demostrarPilaComoTAD();
 
     std::cout << "\n=== Corriendo experimentacion de tiempos Problema 1 (Seccion 9) ===" << std::endl;
     medirTiempos();

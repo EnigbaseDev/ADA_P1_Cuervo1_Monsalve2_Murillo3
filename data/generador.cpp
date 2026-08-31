@@ -3,6 +3,7 @@
 #include <random>
 #include <string>
 #include <cstdint>
+#include <vector>
 
 // Generador para el Problema 1 (Undo/Redo)
 void generarArchivoP1(const std::string& ruta, int n, unsigned int semilla = 42) {
@@ -30,14 +31,25 @@ void generarArchivoP1(const std::string& ruta, int n, unsigned int semilla = 42)
 }
 
 // Generador para el Problema 2 (Rate Limiter)
-void generarArchivoP2(const std::string& ruta, int n, unsigned int semilla = 42) {
+void generarArchivoP2(const std::string& ruta,
+                     int n,
+                     unsigned int semilla = 42,
+                     size_t C = 10,
+                     uint64_t T = 1000,
+                     size_t L = 5) {
     std::mt19937_64 generador(semilla);
     std::uniform_int_distribution<uint64_t> distTiempo(1, 15);     // Delays entre 1 y 15 ms
     std::uniform_int_distribution<size_t> distBytes(64, 1500);      // Tamaños típicos de paquetes
 
     std::ofstream salida(ruta);
-    uint64_t timestamp = 1000;
+    if (!salida.is_open()) {
+        std::cerr << "Error al abrir el archivo: " << ruta << std::endl;
+        return;
+    }
 
+    salida << C << " " << T << " " << L << "\n";
+
+    uint64_t timestamp = 1000;
     for (int i = 0; i < n; i++) {
         timestamp += distTiempo(generador);
         size_t bytes = distBytes(generador);
@@ -58,7 +70,7 @@ int main() {
 
         // Rutas para Problema 2
         std::string rutaP2 = "data/generados/p2_n" + std::to_string(n) + ".txt";
-        generarArchivoP2(rutaP2, n);
+        generarArchivoP2(rutaP2, n, 42, 10, 1000, 5);
         std::cout << "[P2] Creado: " << rutaP2 << std::endl;
     }
 

@@ -21,6 +21,12 @@ public:
     StackArray(int capacidadInicial);
     ~StackArray();
 
+    // Prohibimos copia: la clase administra memoria dinamica cruda (new[]/delete[])
+    // y una copia superficial del puntero causaria doble liberacion al destruir
+    // ambas instancias (mismo motivo por el que QueueCircular la prohibe).
+    StackArray(const StackArray&) = delete;
+    StackArray& operator=(const StackArray&) = delete;
+
     void push(Operacion valor);
     bool pop(Operacion& valorSacado);
     bool peek(Operacion& valor) const;

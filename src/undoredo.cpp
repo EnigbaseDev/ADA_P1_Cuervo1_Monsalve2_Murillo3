@@ -1,4 +1,5 @@
 #include "undoredo.hpp"
+#include "stack_list.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -40,53 +41,7 @@ bool parseLongitud(const std::string& texto, size_t& longitud) {
     return false;
 }
 
-} // namespace
-
-GestorUndoRedo::GestorUndoRedo(int capacidadInicial)
-    : pilaUndo(capacidadInicial), pilaRedo(capacidadInicial) {}
-
-void GestorUndoRedo::registrarEdicion(Operacion op) {
-    pilaUndo.push(op);
-
-    Operacion temp;
-    while (!pilaRedo.isEmpty()) {
-        pilaRedo.pop(temp);
-    }
-}
-
-bool GestorUndoRedo::deshacer(Operacion& opDesecha) {
-    if (pilaUndo.isEmpty()) {
-        return false;
-    }
-
-    Operacion op;
-    pilaUndo.pop(op);
-    pilaRedo.push(op);
-    opDesecha = op;
-    return true;
-}
-
-bool GestorUndoRedo::rehacer(Operacion& opRehecha) {
-    if (pilaRedo.isEmpty()) {
-        return false;
-    }
-
-    Operacion op;
-    pilaRedo.pop(op);
-    pilaUndo.push(op);
-    opRehecha = op;
-    return true;
-}
-
-int GestorUndoRedo::tamanoUndo() const {
-    return pilaUndo.size();
-}
-
-int GestorUndoRedo::tamanoRedo() const {
-    return pilaRedo.size();
-}
-
-static void aplicarOperacion(std::string& documento, Operacion op) {
+void aplicarOperacion(std::string& documento, Operacion op) {
     size_t pos = std::min(static_cast<size_t>(op.posicion), documento.size());
 
     if (op.tipo == INSERT) {
@@ -101,7 +56,7 @@ static void aplicarOperacion(std::string& documento, Operacion op) {
     }
 }
 
-static void revertirOperacion(std::string& documento, Operacion op) {
+void revertirOperacion(std::string& documento, Operacion op) {
     size_t pos = std::min(static_cast<size_t>(op.posicion), documento.size());
 
     if (op.tipo == INSERT) {
@@ -116,7 +71,60 @@ static void revertirOperacion(std::string& documento, Operacion op) {
     }
 }
 
-void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::string& rutaSalida) {
+} // namespace
+
+template <typename PilaT>
+GestorUndoRedo<PilaT>::GestorUndoRedo(int capacidadInicial)
+    : pilaUndo(capacidadInicial), pilaRedo(capacidadInicial) {}
+
+template <typename PilaT>
+void GestorUndoRedo<PilaT>::registrarEdicion(Operacion op) {
+    pilaUndo.push(op);
+
+    Operacion temp;
+    while (!pilaRedo.isEmpty()) {
+        pilaRedo.pop(temp);
+    }
+}
+
+template <typename PilaT>
+bool GestorUndoRedo<PilaT>::deshacer(Operacion& opDeshecha) {
+    if (pilaUndo.isEmpty()) {
+        return false;
+    }
+
+    Operacion op;
+    pilaUndo.pop(op);
+    pilaRedo.push(op);
+    opDeshecha = op;
+    return true;
+}
+
+template <typename PilaT>
+bool GestorUndoRedo<PilaT>::rehacer(Operacion& opRehecha) {
+    if (pilaRedo.isEmpty()) {
+        return false;
+    }
+
+    Operacion op;
+    pilaRedo.pop(op);
+    pilaUndo.push(op);
+    opRehecha = op;
+    return true;
+}
+
+template <typename PilaT>
+int GestorUndoRedo<PilaT>::tamanoUndo() const {
+    return pilaUndo.size();
+}
+
+template <typename PilaT>
+int GestorUndoRedo<PilaT>::tamanoRedo() const {
+    return pilaRedo.size();
+}
+
+template <typename PilaT>
+void GestorUndoRedo<PilaT>::procesarArchivo(const std::string& rutaEntrada, const std::string& rutaSalida) {
     std::ifstream entrada(rutaEntrada);
     std::ofstream salida(rutaSalida);
 
@@ -210,3 +218,8 @@ void GestorUndoRedo::procesarArchivo(const std::string& rutaEntrada, const std::
     salida << "Elementos en pila Undo: " << tamanoUndo() << std::endl;
     salida << "Elementos en pila Redo: " << tamanoRedo() << std::endl;
 }
+
+// Instanciacion explicita: GestorUndoRedo se usa con las dos representaciones
+// del TAD Pila (arreglo dinamico y lista enlazada), sin duplicar logica.
+template class GestorUndoRedo<StackArray>;
+template class GestorUndoRedo<StackList>;

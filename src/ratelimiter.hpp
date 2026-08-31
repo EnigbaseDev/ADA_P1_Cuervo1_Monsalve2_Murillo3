@@ -44,6 +44,10 @@ public:
     size_t getMaxBufferOccupancy() const { return max_buffer_occupancy; }
     size_t getBufferCount() const { return buffer_queue.size(); }
     size_t getTimestampCount() const { return timestamp_queue.size(); }
+    bool isBufferFull() const { return buffer_queue.isFull(); }
+    bool isBufferEmpty() const { return buffer_queue.isEmpty(); }
+    bool isTimestampQueueEmpty() const { return timestamp_queue.isEmpty(); }
+    size_t getBufferCapacity() const { return max_capacity_C; }
 };
 
 #endif
