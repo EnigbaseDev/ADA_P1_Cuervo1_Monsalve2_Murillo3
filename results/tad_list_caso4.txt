@@ -1,0 +1,9 @@
+EDIT aplicado correctamente
+EDIT aplicado correctamente
+UNDO exitoso
+EDIT aplicado correctamente
+REDO no-op: pila Redo vacia
+Estado final: 
+Documento: terceroprimero
+Elementos en pila Undo: 2
+Elementos en pila Redo: 0

@@ -11,10 +11,18 @@ RateLimiter::RateLimiter(size_t C, uint64_t T, size_t L)
       max_buffer_occupancy(0) {}
 
 void RateLimiter::purgeExpired(uint64_t current_timestamp) {
+    // timestamp_queue y buffer_queue crecen siempre en sincronia: cada paquete
+    // ACEPTADO se encola en ambas al mismo tiempo (ver processPacket). Por lo
+    // tanto, al purgar de timestamp_queue una marca de tiempo que ya salio de
+    // la ventana T, el paquete correspondiente en buffer_queue se considera
+    // procesado y tambien se libera. Sin este dequeue, buffer_queue nunca se
+    // vacia: se llena una vez con los primeros C paquetes y rechaza todo el
+    // trafico restante para siempre, lo cual no representa un firewall real.
     while (!timestamp_queue.isEmpty()) {
         uint64_t oldest_ts = timestamp_queue.front();
         if (current_timestamp >= oldest_ts + time_window_T) {
             timestamp_queue.dequeue();
+            buffer_queue.dequeue();
         } else {
             break;
         }

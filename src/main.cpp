@@ -1,6 +1,8 @@
 #include "undoredo.hpp"
 #include "stack_list.hpp"
 #include "ratelimiter.hpp"
+#include "queue_circular.hpp"
+#include "queue_list.hpp"
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -187,6 +189,43 @@ bool leerCabeceraP2(std::ifstream& fileIn, size_t& C, uint64_t& T, size_t& L) {
     return true;
 }
 
+void probarDequeueSobreColaVacia(const std::string& archivoSalida) {
+    std::ofstream out(archivoSalida, std::ios::app);
+    out << "\n=== Prueba dedicada: dequeue/front sobre cola vacia ===\n";
+
+    QueueCircular<size_t> colaCircularVacia(5);
+    try {
+        colaCircularVacia.dequeue();
+        out << "QueueCircular.dequeue() en vacio: NO lanzo excepcion (INESPERADO)\n";
+    } catch (const std::underflow_error& e) {
+        out << "QueueCircular.dequeue() en vacio -> excepcion capturada: \""
+            << e.what() << "\" (manejo correcto, sin caida del programa)\n";
+    }
+    try {
+        colaCircularVacia.front();
+        out << "QueueCircular.front() en vacio: NO lanzo excepcion (INESPERADO)\n";
+    } catch (const std::underflow_error& e) {
+        out << "QueueCircular.front() en vacio -> excepcion capturada: \""
+            << e.what() << "\" (manejo correcto, sin caida del programa)\n";
+    }
+
+    QueueList<uint64_t> colaListaVacia;
+    try {
+        colaListaVacia.dequeue();
+        out << "QueueList.dequeue() en vacio: NO lanzo excepcion (INESPERADO)\n";
+    } catch (const std::underflow_error& e) {
+        out << "QueueList.dequeue() en vacio -> excepcion capturada: \""
+            << e.what() << "\" (manejo correcto, sin caida del programa)\n";
+    }
+    try {
+        colaListaVacia.front();
+        out << "QueueList.front() en vacio: NO lanzo excepcion (INESPERADO)\n";
+    } catch (const std::underflow_error& e) {
+        out << "QueueList.front() en vacio -> excepcion capturada: \""
+            << e.what() << "\" (manejo correcto, sin caida del programa)\n";
+    }
+}
+
 void correrCasosDePruebaP2() {
     std::vector<CasoPruebaP2> casos = {
         {"tests/p2_caso1_flujo_normal.txt", "results/p2_caso1_salida.txt", 5, 1000, 3},
@@ -242,7 +281,11 @@ void correrCasosDePruebaP2() {
                 << ", ocupacion=" << rateLimiter.getBufferCount() << "/" << rateLimiter.getBufferCapacity() << std::endl;
         fileOut << "- Cola de marcas de tiempo: " << (rateLimiter.isTimestampQueueEmpty() ? "VACIA" : "CON DATOS")
                 << ", elementos=" << rateLimiter.getTimestampCount() << std::endl;
+        
 
+        if (caso.archivoEntrada.find("p2_caso6") != std::string::npos) {
+                probarDequeueSobreColaVacia(caso.archivoSalida);
+        }
         std::cout << "Procesado P2: " << caso.archivoEntrada << std::endl;
     }
 }

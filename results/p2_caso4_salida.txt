@@ -1,0 +1,15 @@
+=== Reporte de Salida: tests/p2_caso4_buffer_lleno.txt ===
+Parametros: C=2, T=5000ms, L=10
+Paquete t=100ms, 64 bytes -> ACEPTADO
+Paquete t=105ms, 64 bytes -> ACEPTADO
+Paquete t=110ms, 64 bytes -> RECHAZADO_BUFFER_FULL
+
+Estadisticas Agregadas:
+Total Aceptados: 2
+Total Rechazados Bufer Lleno: 1
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 2
+
+Estado Final de Colas:
+- Buffer: LLENO, ocupacion=2/2
+- Cola de marcas de tiempo: CON DATOS, elementos=2

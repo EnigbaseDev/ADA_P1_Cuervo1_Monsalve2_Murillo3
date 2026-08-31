@@ -1,0 +1,15 @@
+=== Reporte de Salida: tests/p2_caso1_flujo_normal.txt ===
+Parametros: C=5, T=1000ms, L=3
+Paquete t=100ms, 64 bytes -> ACEPTADO
+Paquete t=200ms, 128 bytes -> ACEPTADO
+Paquete t=300ms, 256 bytes -> ACEPTADO
+
+Estadisticas Agregadas:
+Total Aceptados: 3
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 3
+
+Estado Final de Colas:
+- Buffer: PARCIAL, ocupacion=3/5
+- Cola de marcas de tiempo: CON DATOS, elementos=3

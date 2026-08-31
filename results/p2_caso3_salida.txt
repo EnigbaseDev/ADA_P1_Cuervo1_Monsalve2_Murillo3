@@ -1,0 +1,13 @@
+=== Reporte de Salida: tests/p2_caso3_unico_paquete.txt ===
+Parametros: C=5, T=1000ms, L=3
+Paquete t=100ms, 64 bytes -> ACEPTADO
+
+Estadisticas Agregadas:
+Total Aceptados: 1
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 1
+
+Estado Final de Colas:
+- Buffer: PARCIAL, ocupacion=1/5
+- Cola de marcas de tiempo: CON DATOS, elementos=1

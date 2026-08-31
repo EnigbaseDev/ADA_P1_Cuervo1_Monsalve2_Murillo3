@@ -79,9 +79,14 @@ El programa debe ejecutarse sin errores, generar salidas para cada caso de prueb
 Para verificar el estado real del proyecto, se puede compilar y ejecutar con:
 
 ```bash
-g++ -std=c++17 src/*.cpp -I src -o app
-./app
+g++ -std=c++17 -O2 -o ada_p1 src/*.cpp
+./ada_p1
 ```
+
+Nota: no se debe listar `src/main.cpp` por separado junto con `src/*.cpp`, porque el
+glob `*.cpp` ya lo incluye; hacerlo compila `main.cpp` dos veces y produce errores
+de "multiple definition" al enlazar. El comando anterior compila todos los `.cpp`
+de `src/` exactamente una vez.
 
 La solución se considera completa si:
 

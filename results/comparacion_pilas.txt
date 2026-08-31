@@ -1,0 +1,12 @@
+Comparacion StackArray vs StackList sobre el mismo TAD Pila (Undo/Redo)
+=========================================================================
+
+Caso: tests/caso1_secuencia_normal.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso2_undo_vacio.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso3_edicion_undo_redo.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso4_edicion_tras_undo.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso5_n_ediciones_n_deshacer.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso6_redo_exceso.txt -> IDENTICO en ambas representaciones
+Caso: tests/caso7_crecimiento_capacidad.txt -> IDENTICO en ambas representaciones
+
+Conclusion: Las dos representaciones del TAD Pila (arreglo dinamico y lista enlazada) producen resultados identicos para los 7 casos de prueba del Problema 1, confirmando que ambas satisfacen el mismo contrato de interfaz (push/pop/peek/isEmpty/size) sin que quien las use necesite conocer la representacion interna.

@@ -1,0 +1,18 @@
+=== Reporte de Salida: tests/p2_caso6_dequeue_vacio.txt ===
+Parametros: C=5, T=1000ms, L=3
+
+Estadisticas Agregadas:
+Total Aceptados: 0
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 0
+
+Estado Final de Colas:
+- Buffer: VACIO, ocupacion=0/5
+- Cola de marcas de tiempo: VACIA, elementos=0
+
+=== Prueba dedicada: dequeue/front sobre cola vacia ===
+QueueCircular.dequeue() en vacio -> excepcion capturada: "Error: Subflujo en cola circular vacía." (manejo correcto, sin caida del programa)
+QueueCircular.front() en vacio -> excepcion capturada: "Error: Cola circular vacía al consultar frente." (manejo correcto, sin caida del programa)
+QueueList.dequeue() en vacio -> excepcion capturada: "Error: Subflujo en cola enlazada vacía." (manejo correcto, sin caida del programa)
+QueueList.front() en vacio -> excepcion capturada: "Error: Cola enlazada vacía al consultar frente." (manejo correcto, sin caida del programa)

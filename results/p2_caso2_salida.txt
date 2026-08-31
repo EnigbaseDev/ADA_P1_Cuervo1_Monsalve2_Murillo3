@@ -1,0 +1,12 @@
+=== Reporte de Salida: tests/p2_caso2_buffer_vacio.txt ===
+Parametros: C=5, T=1000ms, L=3
+
+Estadisticas Agregadas:
+Total Aceptados: 0
+Total Rechazados Bufer Lleno: 0
+Total Rechazados Limite Tasa: 0
+Ocupacion Maxima del Bufer: 0
+
+Estado Final de Colas:
+- Buffer: VACIO, ocupacion=0/5
+- Cola de marcas de tiempo: VACIA, elementos=0
